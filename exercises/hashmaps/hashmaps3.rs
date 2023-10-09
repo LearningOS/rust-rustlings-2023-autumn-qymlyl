@@ -13,9 +13,6 @@
 //
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
-
-// I AM NOT DONE
-
 use std::collections::HashMap;
 
 // A structure to store the goal details of a team.
@@ -34,11 +31,51 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         let team_1_score: u8 = v[2].parse().unwrap();
         let team_2_name = v[1].to_string();
         let team_2_score: u8 = v[3].parse().unwrap();
-        // TODO: Populate the scores table with details extracted from the
         // current line. Keep in mind that goals scored by team_1
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+
+        // 分数高的就是进球
+        // 一个球队的进球就是另外一个队伍的失球
+        let mut scored_team = "";
+        let mut conceded_team = "";
+        let mut scored_score = 0;
+        let mut conceded_score = 0;
+        if team_1_score > team_2_score {
+            scored_team = team_1_name.as_str();
+            conceded_team = team_2_name.as_str();
+            scored_score = team_1_score;
+            conceded_score = team_2_score;
+
+        } else {
+            scored_team = team_2_name.as_str();
+            conceded_team = team_1_name.as_str();
+            scored_score = team_2_score;
+            conceded_score = team_1_score;
+        }
+
+        if !scores.contains_key(scored_team) {
+            scores.insert(scored_team.to_string(), Team{
+                goals_scored: scored_score,
+                goals_conceded: conceded_score,
+            });
+        } else {
+            let team = scores.get_mut(scored_team).unwrap();
+            team.goals_scored += scored_score;
+            team.goals_conceded += conceded_score;
+        }
+
+        if !scores.contains_key(conceded_team) {
+            scores.insert(conceded_team.to_string(), Team{
+                goals_scored: conceded_score,
+                goals_conceded: scored_score,
+            });
+        } else {
+            let team = scores.get_mut(conceded_team).unwrap();
+            team.goals_scored += conceded_score;
+            team.goals_conceded += scored_score;
+        }
     }
     scores
 }
