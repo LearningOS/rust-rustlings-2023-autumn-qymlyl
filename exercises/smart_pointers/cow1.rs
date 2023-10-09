@@ -12,8 +12,9 @@
 //
 // Execute `rustlings hint cow1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
+// 对于 Cow 类型，它有两个变体：Cow::Borrowed 和 Cow::Owned，这两个变体取决于 Cow 包装的数据是否需要被修改。
+// Cow::Borrowed: 当包装的数据不需要修改时，Cow 会保持借用（不拥有）原始数据。这通常在你不需要对数据进行修改时发生，从而避免了不必要的复制。
+// Cow::Owned: 当包装的数据需要被修改时，Cow 会复制原始数据并拥有它。这通常在你尝试修改数据时发生，因为原始数据是不可变的，所以 Cow 会为你创建一个可修改的拷贝。
 use std::borrow::Cow;
 
 fn abs_all<'a, 'b>(input: &'a mut Cow<'b, [i32]>) -> &'a mut Cow<'b, [i32]> {
@@ -48,7 +49,8 @@ mod tests {
         let slice = [0, 1, 2];
         let mut input = Cow::from(&slice[..]);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Borrowed(_) => Ok(()),
+            _ => Err("Expected borrowed value"),
         }
     }
 
@@ -60,7 +62,8 @@ mod tests {
         let slice = vec![0, 1, 2];
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 
@@ -72,7 +75,8 @@ mod tests {
         let slice = vec![-1, 0, 1];
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected borrowed value"),
         }
     }
 }
